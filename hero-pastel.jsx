@@ -10,22 +10,18 @@ function HeroPastel({ onExploreClick }) {
             <span>Decoração de eventos · Feita com carinho</span>
           </div>
           <h1 className="hero-title">
-            <span className="line">Decorações</span>
-            <span className="line italic">em buffets</span>
-            <span className="line"><span className="accent">parceiros</span>.</span>
+            <span className="line">Parceria com</span>
+            <span className="line italic">Buffet</span>
+            <span className="line"><span className="accent">Gato Sapeka</span>.</span>
           </h1>
           <p className="hero-sub">
-            A união da nossa assinatura visual com a estrutura dos melhores buffets
-            para tornar o seu evento inesquecível.
+            Explore as nossas decorações e encontre a inspiração perfeita para o dia dos seus sonhos!
           </p>
           <div className="hero-actions">
             <button className="btn btn-primary" onClick={onExploreClick}>
               Ver projetos
               <span className="arrow">→</span>
             </button>
-            <a className="btn btn-ghost" href="#faq">
-              Como funciona
-            </a>
           </div>
         </div>
 
@@ -33,11 +29,11 @@ function HeroPastel({ onExploreClick }) {
           <div className="hero-dot d1" />
           <div className="hero-dot d2" />
           <div className="hero-dot d3" />
-          <div className="hero-img">
-            <window.PlaceholderImg
-              paleta="Pastel Misto"
-              label="capa — mesa de evento principal"
-              full
+          <div className="hero-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", boxShadow: "none" }}>
+            <img
+              src="logo-cris-borba.jpeg"
+              alt="Cris Borba Decorações"
+              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
             />
           </div>
         </div>
