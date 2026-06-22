@@ -114,7 +114,7 @@ function Header() {
           <a href="#decoracoes" onClick={(e) => scrollTo("decoracoes", e)}>Decorações</a>
           <a href="#sobre" onClick={(e) => scrollTo("sobre", e)}>Sobre a Cris</a>
           <a href="#contato" onClick={(e) => scrollTo("contato", e)}>Contato</a>
-          <a href="Cris Borba Decoracoes - Pastel.html" className="home-menu-cta" style={{ padding: "14px" }}>Parceiros →</a>
+          <a href="parceria.html" className="home-menu-cta" style={{ padding: "14px" }}>Parceiros →</a>
         </nav>
       </div>
     </header>);

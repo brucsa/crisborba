@@ -68,9 +68,10 @@ function App() {
           </div>
           <div className="topbar-links">
             <a href="#portfolio">Portfólio</a>
+            {/* TEMPORÁRIO: botão para decorações particulares desativado até lançamento
             <a className="topbar-cta" href="Cris Borba Decoracoes - Home.html" style={{ backgroundColor: "rgb(255, 211, 80)", color: "rgb(0, 0, 0)", opacity: "100" }}>Decorações particulares
-
             </a>
+            */}
           </div>
         </div>
       </nav>
