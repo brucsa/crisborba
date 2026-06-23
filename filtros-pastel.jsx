@@ -8,7 +8,6 @@ function FiltrosPastel({ temas, query, setQuery, categoria, setCategoria, totalF
     <section className="filtros" id="portfolio">
       <div className="filtros-head">
         <div>
-          <span className="section-num">02</span>
           <h2 className="section-title">Portfólio</h2>
         </div>
         <div className="filtros-count" style={{ backgroundColor: "rgba(255, 230, 155, 0.5)" }}>

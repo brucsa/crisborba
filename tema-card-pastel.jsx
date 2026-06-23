@@ -15,6 +15,7 @@ function TemaCardPastel({ tema, index, onOpen }) {
       <div className="card-img-wrap">
         <window.PlaceholderImg paleta={opcao.paleta} imagem={imagemCapa} label={tema.nome} />
         <div className="card-num">{numStr}</div>
+        {tema.destaque && <div className="card-destaque">⭐ Em destaque</div>}
         {tema.opcoes.length > 1 && (
           <div className="card-opts">+{tema.opcoes.length - 1} vers{tema.opcoes.length > 2 ? "ões" : "ão"}</div>
         )}

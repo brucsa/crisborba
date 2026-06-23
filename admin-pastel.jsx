@@ -1,4 +1,4 @@
-﻿// Admin pastel — upload múltiplo de imagens por opção, código automático por opção.
+// Admin pastel — upload múltiplo de imagens por opção, código automático por opção.
 
 const STORAGE_KEY_P = "crisborba_temas_v2";
 const ADMIN_SESSION_P = "crisborba_admin_session";
@@ -40,21 +40,21 @@ async function loadTemasRemote() {
   return null;
 }
 
-function gerarCodigo(nomeTema, indiceOpcao, offsetGlobal = 0) {
-  const num = String((offsetGlobal || 0) + indiceOpcao + 1).padStart(3, "0");
-  return `CRIS-${num}`;
+function prefixoTema(nome) {
+  return (nome || "TEM").normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-zA-Z]/g, "")
+    .substring(0, 3)
+    .toUpperCase()
+    .padEnd(3, "X");
 }
 
-// Retorna o maior número de código já usado em todos os temas
+function gerarCodigo(nomeTema, indiceOpcao) {
+  return `${prefixoTema(nomeTema)}-${String(indiceOpcao + 1).padStart(3, "0")}`;
+}
+
 function maxCodigoExistente(temas) {
-  let max = 0;
-  temas.forEach(t => t.opcoes.forEach(o => {
-    if (o.codigo) {
-      const n = parseInt(o.codigo.replace('CRIS-', ''), 10);
-      if (!isNaN(n) && n > max) max = n;
-    }
-  }));
-  return max;
+  return 0;
 }
 
 async function aplicarMarcaDagua(file) {
@@ -154,7 +154,7 @@ function AdminPanelPastel({ onClose, temas, setTemas }) {
   const [view, setView] = React.useState("list");
   const [editId, setEditId] = React.useState(null);
 
-  const formVazio = { nome: "", categoria: "Aniversário Infantil", tipo: "", tags: "", descricao: "", opcoes: [{ titulo: "", legenda: "", imagens: [] }] };
+  const formVazio = { nome: "", categoria: "Aniversário Infantil", tipo: "", tags: "", descricao: "", destaque: false, opcoes: [{ titulo: "", legenda: "", imagens: [] }] };
   const [form, setForm] = React.useState(formVazio);
   const [tipoErro, setTipoErro] = React.useState(false);
 
@@ -250,39 +250,30 @@ function AdminPanelPastel({ onClose, temas, setTemas }) {
     let next;
 
     if (editId) {
-      let prox = maxCodigoExistente(temas);
-      const codigosUsados = new Set();
       const atualizado = {
         ...temas.find(t => t.id === editId),
         nome: nomeTrim, categoria: form.categoria, tipo: form.tipo || "parceria",
         tags: form.tags.split(",").map(t => t.trim().toLowerCase()).filter(Boolean),
         descricao: form.descricao.trim() || "Tema personalizado adicionado pela Cris.",
-        opcoes: form.opcoes.map((o) => {
+        destaque: form.destaque || false,
+        opcoes: form.opcoes.map((o, i) => {
           const imagens = (o.imagens || []).filter(img => img && img !== '__enviando__');
-          // Mantém código existente apenas se não for duplicado dentro do mesmo tema
-          if (o.codigo && !codigosUsados.has(o.codigo)) {
-            codigosUsados.add(o.codigo);
-            return { titulo: o.titulo.trim() || "Versão única", legenda: o.legenda.trim() || "", imagens, codigo: o.codigo };
-          }
-          prox += 1;
-          const c = `CRIS-${String(prox).padStart(3, "0")}`;
-          codigosUsados.add(c);
-          return { titulo: o.titulo.trim() || "Versão única", legenda: o.legenda.trim() || "", imagens, codigo: c };
+          const codigo = o.codigo || gerarCodigo(nomeTrim, i);
+          return { titulo: o.titulo.trim() || "Versão única", legenda: o.legenda.trim() || "", imagens, codigo };
         }),
       };
       next = temas.map(t => t.id === editId ? atualizado : t).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
     } else {
-      let prox = maxCodigoExistente(temas);
       const novo = {
         id: nomeTrim.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
               .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now().toString(36),
         nome: nomeTrim, categoria: form.categoria, tipo: form.tipo || "parceria",
         tags: form.tags.split(",").map(t => t.trim().toLowerCase()).filter(Boolean),
         descricao: form.descricao.trim() || "Tema personalizado adicionado pela Cris.",
-        opcoes: form.opcoes.map((o) => {
-          prox += 1;
+        destaque: form.destaque || false,
+        opcoes: form.opcoes.map((o, i) => {
           const imagens = (o.imagens || []).filter(img => img && img !== '__enviando__');
-          return { titulo: o.titulo.trim() || "Versão única", legenda: o.legenda.trim() || "", imagens, codigo: `CRIS-${String(prox).padStart(3, "0")}` };
+          return { titulo: o.titulo.trim() || "Versão única", legenda: o.legenda.trim() || "", imagens, codigo: gerarCodigo(nomeTrim, i) };
         }),
       };
       next = [...temas, novo].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
@@ -299,7 +290,7 @@ function AdminPanelPastel({ onClose, temas, setTemas }) {
   function editarTema(tema) {
     setForm({
       nome: tema.nome, categoria: tema.categoria, tipo: tema.tipo || "parceria",
-      tags: (tema.tags || []).join(", "), descricao: tema.descricao || "",
+      tags: (tema.tags || []).join(", "), descricao: tema.descricao || "", destaque: tema.destaque || false,
       opcoes: tema.opcoes.map(o => ({
         titulo: o.titulo, legenda: o.legenda || "",
         imagens: normalizarImagens(o),
@@ -310,10 +301,18 @@ function AdminPanelPastel({ onClose, temas, setTemas }) {
     setView("add");
   }
 
-  function removerTema(id) {
+  async function removerTema(id) {
     if (!confirm("Remover este tema?")) return;
     const next = temas.filter(t => t.id !== id);
-    setTemas(next); saveTemasPastel(next);
+    setTemas(next);
+    try { localStorage.setItem(STORAGE_KEY_P, JSON.stringify(next)); } catch (e) {}
+    try {
+      await fetch(API + '/temas.php', {
+        method: 'DELETE', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+    } catch (e) { console.warn('Erro ao remover tema:', e); }
   }
 
   function resetar() {
@@ -438,6 +437,25 @@ function AdminPanelPastel({ onClose, temas, setTemas }) {
                 <label>
                   <span>Descrição</span>
                   <textarea rows="3" value={form.descricao} onChange={(e) => setForm({...form, descricao: e.target.value})} placeholder="Conte sobre o tema, atmosfera, elementos…" />
+                </label>
+
+                <label className="admin-destaque-toggle" style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", padding: "10px 0" }}>
+                  <div
+                    onClick={() => setForm({...form, destaque: !form.destaque})}
+                    style={{
+                      width: 44, height: 24, borderRadius: 12, background: form.destaque ? "#c9a96e" : "#ddd",
+                      position: "relative", transition: "background .2s", flexShrink: 0, cursor: "pointer"
+                    }}
+                  >
+                    <div style={{
+                      position: "absolute", top: 3, left: form.destaque ? 23 : 3,
+                      width: 18, height: 18, borderRadius: "50%", background: "#fff",
+                      transition: "left .2s", boxShadow: "0 1px 3px rgba(0,0,0,.25)"
+                    }} />
+                  </div>
+                  <span style={{ fontWeight: form.destaque ? 600 : 400 }}>
+                    {form.destaque ? "⭐ Em destaque — aparece primeiro no portfólio" : "Destacar este tema no portfólio"}
+                  </span>
                 </label>
 
                 <div className="admin-opcoes">

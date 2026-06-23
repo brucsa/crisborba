@@ -15,8 +15,13 @@ Options -Indexes
     RewriteEngine On
     RewriteBase /
 
-    # Redireciona index.html para parceria.html
-    RewriteRule ^$ parceria.html [L]
+    # Redireciona raiz para /parceria
+    RewriteRule ^$ /parceria [R=301,L]
+
+    # /parceria → parceria.html (sem redirecionar novamente)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^parceria$ parceria.html [L]
 </IfModule>
 
 # Cache de imagens e assets

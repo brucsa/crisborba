@@ -26,20 +26,21 @@ switch ($method) {
         $cat    = trim($body['categoria'] ?? '');
         $tags   = json_encode($body['tags']   ?? []);
         $desc   = trim($body['descricao'] ?? '');
-        $tipo   = $body['tipo']   ?? 'parceria';
-        $opcoes = json_encode($body['opcoes'] ?? []);
+        $tipo     = $body['tipo']     ?? 'parceria';
+        $opcoes   = json_encode($body['opcoes']   ?? []);
+        $destaque = !empty($body['destaque']) ? 1 : 0;
 
         if (!$id || !$nome) json_out(['error' => 'id e nome são obrigatórios.'], 400);
 
         $db = getDB();
         $st = $db->prepare(
-            "INSERT INTO temas (id, nome, categoria, tags, descricao, tipo, opcoes)
-             VALUES (?, ?, ?, ?, ?, ?, ?)
+            "INSERT INTO temas (id, nome, categoria, tags, descricao, tipo, opcoes, destaque)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
              ON DUPLICATE KEY UPDATE
                nome=VALUES(nome), categoria=VALUES(categoria), tags=VALUES(tags),
-               descricao=VALUES(descricao), tipo=VALUES(tipo), opcoes=VALUES(opcoes)"
+               descricao=VALUES(descricao), tipo=VALUES(tipo), opcoes=VALUES(opcoes), destaque=VALUES(destaque)"
         );
-        $st->execute([$id, $nome, $cat, $tags, $desc, $tipo, $opcoes]);
+        $st->execute([$id, $nome, $cat, $tags, $desc, $tipo, $opcoes, $destaque]);
         json_out(['ok' => true, 'id' => $id]);
 
     case 'DELETE':
