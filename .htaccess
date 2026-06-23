@@ -1,0 +1,37 @@
+Options -Indexes
+
+# Bloqueia acesso direto à pasta de configuração
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
+<Files "setup.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# PHP via API — permite .php na pasta api
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Redireciona index.html para parceria.html
+    RewriteRule ^$ parceria.html [L]
+</IfModule>
+
+# Cache de imagens e assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png  "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css   "access plus 1 week"
+    ExpiresByType text/javascript "access plus 1 week"
+</IfModule>
+
+# Segurança de cabeçalhos
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
