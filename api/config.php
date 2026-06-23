@@ -1,9 +1,9 @@
 <?php
 // Configurações do banco de dados — preencher com os dados do cPanel do Hostgator
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'SEU_BANCO_AQUI');     // ex: usuario_crisborba
-define('DB_USER', 'SEU_USUARIO_AQUI');   // ex: usuario_db
-define('DB_PASS', 'SUA_SENHA_AQUI');
+define('DB_NAME', 'bru35182_crisborba');
+define('DB_USER', 'bru35182_crisborba');
+define('DB_PASS', 'Brunacrist13*');
 
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
 define('UPLOAD_URL', '/uploads/');

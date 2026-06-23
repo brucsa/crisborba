@@ -5,8 +5,8 @@
 require_once __DIR__ . '/config.php';
 
 // ---- Configure aqui antes de rodar ----
-$ADMIN_EMAIL = 'crisborba@email.com';  // troque pelo e-mail real da Cris
-$ADMIN_SENHA = 'TrocaPorUmaSenhaForte2025!'; // troque por uma senha forte
+$ADMIN_EMAIL = 'Crisborba_eventos@hotmail.com';
+$ADMIN_SENHA = 'Brunacrist13*';
 // ----------------------------------------
 
 $db = getDB();
