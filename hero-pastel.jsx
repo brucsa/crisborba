@@ -12,7 +12,7 @@ function HeroPastel({ onExploreClick }) {
           <h1 className="hero-title">
             <span className="line">Parceria com</span>
             <span className="line italic">Buffet</span>
-            <span className="line"><span className="accent">Gato Sapeka</span>.</span>
+            <span className="line"><span className="accent">Gato Sapeka</span></span>
           </h1>
           <p className="hero-sub">
             Explore as nossas decorações e encontre a inspiração perfeita para o dia dos seus sonhos!
